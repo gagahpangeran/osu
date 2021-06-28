@@ -1,0 +1,66 @@
+name: Bug Report
+description: Report a bug or crash
+body:
+  - type: checkboxes
+    id: check-issue
+    attributes:
+      label: IMPORTANT! Your issue may already be reported
+      options:
+        - label: I already check the pinned issue at the top of [issue page](https://github.com/ppy/osu/issues)
+          required: true
+        - label: I already check current [priority 0 issues](https://github.com/ppy/osu/issues?q=is%3Aissue+is%3Aopen+label%3Apriority%3A0)
+          required: true
+        - label: I already search about my issue in [issue page](https://github.com/ppy/osu/issues) and do not find anything about it
+          required: true
+  - type: markdown
+    attributes:
+      value: If you find that your issue already exists, please respond with a reaction or add any further information that may be helpful.
+  - type: textarea
+    id: report
+    attributes:
+      label: What happened?
+      description: Please report with as much information as possible
+      value: |
+**Describe the bug:**
+
+**Screenshots or videos showing encountered issue:**
+
+**osu!lazer version:**
+
+**Logs:**
+
+<!--
+*please attach logs here, which are located at:*
+- `%AppData%/osu/logs` *(on Windows),*
+- `~/.local/share/osu/logs` *(on Linux & macOS).*
+- `Android/data/sh.ppy.osulazer/files/logs` *(on Android)*,
+- on iOS they can be obtained by connecting your device to your desktop and copying the `logs` directory from the app's own document storage using iTunes. (https://support.apple.com/en-us/HT201301#copy-to-computer)
+-->
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of our software are you running?
+      options:
+        - 1.0.2 (Default)
+        - 1.0.3 (Edge)
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
