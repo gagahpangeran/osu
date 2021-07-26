@@ -12,6 +12,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Input;
 using osu.Framework.Input.Bindings;
+using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osu.Framework.Threading;
 using osu.Game.Configuration;
@@ -181,7 +182,45 @@ namespace osu.Game.Graphics
             {
                 fileStream.CopyTo(ms);
                 var request = new UploadScreenshotRequest(ms.ToArray());
+
+                var notification = new ProgressNotification
+                {
+                    Text = $"Uploading {fileName}",
+                    CompletionText = $"{fileName} is uploaded!",
+                };
+
+                request.Progressed += (current, total) =>
+                {
+                    notification.State = ProgressNotificationState.Active;
+                    notification.Progress = (float)current / total;
+                };
+
+                request.Success += response => Schedule(() =>
+                {
+                    notification.State = ProgressNotificationState.Completed;
+                    notification.CompletionClickAction = () =>
+                    {
+                        host.OpenUrlExternally($"{api.WebsiteRootUrl}/screenshots/{response.Id}");
+                        return true;
+                    };
+                });
+
+                request.Failure += error => Schedule(() =>
+                {
+                    notification.State = ProgressNotificationState.Cancelled;
+
+                    if (!(error is OperationCanceledException))
+                        Logger.Error(error, $"Failed to upload ${fileName}");
+                });
+
+                notification.CancelRequested += () =>
+                {
+                    request.Cancel();
+                    return true;
+                };
+
                 api.PerformAsync(request);
+                notificationOverlay.Post(notification);
             }
         }
     }
