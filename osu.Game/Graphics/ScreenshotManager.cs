@@ -16,6 +16,8 @@ using osu.Framework.Platform;
 using osu.Framework.Threading;
 using osu.Game.Configuration;
 using osu.Game.Input.Bindings;
+using osu.Game.Online.API;
+using osu.Game.Online.API.Requests;
 using osu.Game.Overlays;
 using osu.Game.Overlays.Notifications;
 using SixLabors.ImageSharp;
@@ -46,6 +48,9 @@ namespace osu.Game.Graphics
 
         private Sample shutter;
 
+        [Resolved]
+        private IAPIProvider api { get; set; }
+
         [BackgroundDependencyLoader]
         private void load(OsuConfigManager config, Storage storage, AudioManager audio)
         {
@@ -75,6 +80,7 @@ namespace osu.Game.Graphics
         }
 
         private volatile int screenShotTasks;
+        private string fileName;
 
         public Task TakeScreenshotAsync() => Task.Run(async () =>
         {
@@ -108,7 +114,7 @@ namespace osu.Game.Graphics
                 if (Interlocked.Decrement(ref screenShotTasks) == 0 && cursorVisibility.Value == false)
                     cursorVisibility.Value = true;
 
-                var fileName = getFileName();
+                fileName = getFileName();
                 if (fileName == null) return;
 
                 var stream = storage.GetStream(fileName, FileAccess.Write);
@@ -128,6 +134,8 @@ namespace osu.Game.Graphics
                     default:
                         throw new InvalidOperationException($"Unknown enum member {nameof(ScreenshotFormat)} {screenshotFormat.Value}.");
                 }
+
+                stream.Close();
 
                 notificationOverlay.Post(new SimpleNotification
                 {
@@ -158,6 +166,18 @@ namespace osu.Game.Graphics
             }
 
             return null;
+        }
+
+        private void uploadImage()
+        {
+            var fileStream = storage.GetStream(fileName);
+
+            using (var ms = new MemoryStream())
+            {
+                fileStream.CopyTo(ms);
+                var request = new UploadScreenshotRequest(ms.ToArray());
+                api.PerformAsync(request);
+            }
         }
     }
 }
