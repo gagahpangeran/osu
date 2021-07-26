@@ -42,6 +42,7 @@ namespace osu.Game.Input.Bindings
             new KeyBinding(InputKey.F9, GlobalAction.ToggleSocial),
             new KeyBinding(InputKey.F10, GlobalAction.ToggleGameplayMouseButtons),
             new KeyBinding(InputKey.F12, GlobalAction.TakeScreenshot),
+            new KeyBinding(new[] { InputKey.Shift, InputKey.F12 }, GlobalAction.TakeScreenshotAndUpload),
 
             new KeyBinding(new[] { InputKey.Control, InputKey.Alt, InputKey.R }, GlobalAction.ResetInputSettings),
             new KeyBinding(new[] { InputKey.Control, InputKey.T }, GlobalAction.ToggleToolbar),
@@ -280,5 +281,8 @@ namespace osu.Game.Input.Bindings
 
         [Description("Seek replay backward")]
         SeekReplayBackward,
+
+        [Description("Take screenshot and upload")]
+        TakeScreenshotAndUpload,
     }
 }

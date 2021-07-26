@@ -67,8 +67,13 @@ namespace osu.Game.Graphics
             switch (action)
             {
                 case GlobalAction.TakeScreenshot:
+                case GlobalAction.TakeScreenshotAndUpload:
                     shutter.Play();
-                    TakeScreenshotAsync();
+                    TakeScreenshotAsync().ContinueWith(_ =>
+                    {
+                        if (action == GlobalAction.TakeScreenshotAndUpload)
+                            uploadImage();
+                    });
                     return true;
             }
 
