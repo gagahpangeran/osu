@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Linq;
+using Markdig.Extensions.CustomContainers;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -29,6 +30,18 @@ namespace osu.Game.Overlays.Wiki.Markdown
             {
                 case YamlFrontMatterBlock yamlFrontMatterBlock:
                     container.Add(new WikiNoticeContainer(yamlFrontMatterBlock));
+                    break;
+
+                case CustomContainer customContainerBlock:
+                    if (customContainerBlock.Info == "Infobox")
+                    {
+                        var infobox = new WikiInfobox();
+                        container.Add(infobox);
+
+                        foreach (var childBlock in customContainerBlock)
+                            AddMarkdownComponent(childBlock, infobox.ChildContainer, level + 1);
+                    }
+
                     break;
 
                 case ParagraphBlock paragraphBlock:

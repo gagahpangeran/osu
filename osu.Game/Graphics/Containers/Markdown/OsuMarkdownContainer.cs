@@ -3,6 +3,7 @@
 
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
+using Markdig.Extensions.CustomContainers;
 using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
@@ -27,6 +28,10 @@ namespace osu.Game.Graphics.Containers.Markdown
             {
                 case YamlFrontMatterBlock _:
                     // Don't parse YAML Frontmatter
+                    break;
+
+                case CustomContainer _:
+                    // Don't parse custom container
                     break;
 
                 case ListItemBlock listItemBlock:
