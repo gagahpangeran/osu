@@ -187,6 +187,18 @@ Line after image";
             });
         }
 
+        [Test]
+        public void TestInfobox()
+        {
+            AddStep("Add infobox", () =>
+            {
+                markdownContainer.CurrentPath = "https://dev.ppy.sh/wiki/Silence/";
+                markdownContainer.Text = @"::: Infobox
+![](img/silence-profile.png ""Silence record in the profile page"")
+:::";
+            });
+        }
+
         private class TestMarkdownContainer : WikiMarkdownContainer
         {
             public LinkInline Link;
