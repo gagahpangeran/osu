@@ -199,6 +199,38 @@ Line after image";
             });
         }
 
+        [Test]
+        public void TestParagraphWithInfobox()
+        {
+            AddStep("Add content", () =>
+            {
+                markdownContainer.CurrentPath = "https://dev.ppy.sh/wiki/Silence/";
+                markdownContainer.Text = @"
+::: Infobox
+![](img/silence-profile.png ""Silence record in the profile page"")
+:::
+
+Users who are silenced by moderators cannot do the following:
+
+- Use [chat](/wiki/Chat_Console) (public and private), both in-game and on the website
+- Post on any of the osu! forums
+- Leave comments anywhere on the website (news, changelog, beatmaps)
+- Take part in [beatmap discussions](/wiki/Beatmap_Discussion)
+- Edit profile details (e.g. avatar, ""me!"" section)
+- Submit and update beatmaps
+- Partake in [multiplayer](/wiki/Multi) games
+
+In addition to that, all messages of a silenced user are removed from all chat channels and private conversations [[1]](https://blog.ppy.sh/post/38114063519/this-week-in-osu-5 ""ppy blog"").
+
+::: Infobox
+![](img/silence-ingame.png ""Silence warning in the chat"")
+:::
+
+After a user is silenced, an alert will be displayed in place of the chat input field, saying when the silence wears off. The silence record can also be observed at the bottom of the profile on the website, from which it will disappear after 28 days.
+";
+            });
+        }
+
         private class TestMarkdownContainer : WikiMarkdownContainer
         {
             public LinkInline Link;
